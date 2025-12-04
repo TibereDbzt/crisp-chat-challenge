@@ -22,8 +22,8 @@
     /* Path aliases */
     "baseUrl": ".",
     "paths": {
-      "@types/*": ["./src/types/*"],
-      "@services/*": ["./src/services/*"]
+      "@/*": ["src/*"],
+      "@services/*": ["src/services/*"]
     }
   },
   "include": ["src/**/*"],
