@@ -3,5 +3,6 @@ export interface Message {
   content: string;
   username: string;
   userId: string;
+  room: string;
   timestamp: number;
 }
