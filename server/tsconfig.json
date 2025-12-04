@@ -24,6 +24,7 @@
     "paths": {
       "@/*": ["src/*"],
       "@domain/*": ["src/domain/*"],
+      "@infrastructure/*": ["src/infrastructure/*"]
     }
   },
   "include": ["src/**/*"],
