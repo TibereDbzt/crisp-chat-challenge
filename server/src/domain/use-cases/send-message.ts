@@ -3,7 +3,14 @@ import type { RoomRepository } from '@/domain/repositories/RoomRepository';
 import { addMessageToRoom } from '@/domain/room-logic';
 import { v4 as uuidv4 } from 'uuid';
 
-export function createSendMessageUseCase(roomRepository: RoomRepository) {
+export type ISendMessageUseCase = (
+  content: string,
+  username: string,
+  userId: string,
+  roomName: string
+) => Message;
+
+export function createSendMessageUseCase(roomRepository: RoomRepository): ISendMessageUseCase {
   return function sendMessage(
     content: string,
     username: string,

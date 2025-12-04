@@ -4,10 +4,16 @@ import type { UserRepository } from '@/domain/repositories/UserRepository';
 import { createRoom, addUserToRoom } from '@/domain/room-logic';
 import { v4 as uuidv4 } from 'uuid';
 
+export type IJoinRoomUseCase = (
+  username: string,
+  roomName: string,
+  socketId: string
+) => User;
+
 export function createJoinRoomUseCase(
   roomRepository: RoomRepository,
   userRepository: UserRepository
-) {
+): IJoinRoomUseCase {
   return function joinRoom(username: string, roomName: string, socketId: string): User {
     let room = roomRepository.findByName(roomName);
     if (!room) {
