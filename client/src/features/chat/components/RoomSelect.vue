@@ -12,10 +12,9 @@
       @update:model-value="(value) => $emit('update:modelValue', String(value))"
     />
 
-    <!-- Existing Rooms List -->
-    <div v-if="!isLoadingRooms && rooms.length > 0" class="space-y-2 max-h-[320px] overflow-y-auto">
+    <div v-if="!isLoadingRooms && (rooms.length > 0 || modelValue.length)" class="space-y-2 max-h-[320px] overflow-y-auto">
       <p class="text-xs text-muted-foreground px-1">
-        {{ filteredRooms.length > 0 ? 'Salons disponibles' : 'Aucun salon correspondant' }}
+        {{ filteredRooms.length > 0 ? '' : 'Aucun salon correspondant' }}
       </p>
 
       <button
