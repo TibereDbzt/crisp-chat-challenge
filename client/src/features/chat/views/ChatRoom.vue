@@ -169,10 +169,14 @@ const handleSendMessage = () => {
 }
 
 const formatTime = (timestamp: number): string => {
-  return new Date(timestamp).toLocaleTimeString('en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const date = new Date(timestamp);
+  const dayName = date.toLocaleDateString('fr-FR', { weekday: 'long' });
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  
+  const capitalizedDay = dayName.charAt(0).toUpperCase() + dayName.slice(1);
+  
+  return `${capitalizedDay} ${hours}h${minutes}`;
 }
 
 const isOwnMessage = (userId: string): boolean => {
