@@ -15,6 +15,8 @@ export function createSocketHandlers(
 
         callback({ success: true, user });
 
+        socket.emit('room:messages', { messages: room.messages });
+
         const usernames = room.users.map((u) => u.username);
         io.to(room.name).emit('room:users', { users: usernames });
       } catch (error) {

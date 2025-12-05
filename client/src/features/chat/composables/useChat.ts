@@ -24,14 +24,20 @@ export function useChat(api: ChatApi) {
     users.value = data.users;
   }
 
+  const handleRoomMessages = (data: { messages: Message[] }) => {
+    messages.value = data.messages;
+  }
+
   const setupListeners = () => {
     api.onMessage(handleNewMessage);
     api.onUserJoined(handleUsersUpdate);
+    api.onRoomMessages(handleRoomMessages);
   }
 
   const cleanupListeners = () => {
     api.offMessage(handleNewMessage);
     api.offUserJoined(handleUsersUpdate);
+    api.offRoomMessages(handleRoomMessages);
   }
 
   const joinRoom = async (username: string, roomName: string): Promise<boolean> => {

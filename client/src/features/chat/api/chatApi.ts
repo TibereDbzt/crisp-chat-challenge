@@ -10,7 +10,9 @@ export interface ChatApi {
   
   onMessage(callback: (message: Message) => void): void;
   onUserJoined(callback: (data: { users: string[] }) => void): void;
+  onRoomMessages(callback: (data: { messages: Message[] }) => void): void;
   
   offMessage(callback: (message: Message) => void): void;
   offUserJoined(callback: (data: { users: string[] }) => void): void;
+  offRoomMessages(callback: (data: { messages: Message[] }) => void): void;
 }

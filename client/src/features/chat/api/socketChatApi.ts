@@ -49,12 +49,20 @@ export function createSocketChatApi(serverUrl: string): ChatApi {
       socket?.on('room:users', callback);
     },
 
+    onRoomMessages(callback: (data: { messages: Message[] }) => void): void {
+      socket?.on('room:messages', callback);
+    },
+
     offMessage(callback: (message: Message) => void): void {
       socket?.off('message:new', callback);
     },
 
     offUserJoined(callback: (data: { users: string[] }) => void): void {
       socket?.off('room:users', callback);
+    },
+
+    offRoomMessages(callback: (data: { messages: Message[] }) => void): void {
+      socket?.off('room:messages', callback);
     },
   };
 }
