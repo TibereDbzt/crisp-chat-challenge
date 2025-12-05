@@ -1,6 +1,5 @@
 import type { Message } from '@/domain/entities/Message';
 import type { RoomRepository } from '@/domain/repositories/RoomRepository';
-import { addMessageToRoom } from '@/domain/room-logic';
 import { v4 as uuidv4 } from 'uuid';
 
 export type ISendMessageUseCase = (
@@ -36,7 +35,10 @@ export function createSendMessageUseCase(roomRepository: RoomRepository): ISendM
       timestamp: Date.now(),
     };
 
-    const updatedRoom = addMessageToRoom(room, message);
+    const updatedRoom = {
+        ...room,
+        messages:[...room.messages, message]
+    };
 
     roomRepository.save(updatedRoom);
 
