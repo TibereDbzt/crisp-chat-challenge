@@ -33,7 +33,7 @@
           ]"
           :aria-hidden="!username.trim()"
         >
-          <div class="overflow-hidden px-1">
+          <div class="overflow-hidden p-1">
             <div 
               :class="[
                 'transition-transform duration-300 ease-out',
