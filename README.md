@@ -2,6 +2,12 @@
 
 A real-time chat application built with Vue 3 and Socket.io, featuring multiple chat rooms and live user presence.
 
+## 🌐 Live Demo
+
+**Try it now:** [https://crispchatchallenge.netlify.app/](https://crispchatchallenge.netlify.app/)
+
+The application is hosted on Netlify (frontend) and Render (backend). Feel free to create a room and start chatting!
+
 ## Getting Started
 
 ### Prerequisites
