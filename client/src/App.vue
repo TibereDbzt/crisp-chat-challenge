@@ -1,13 +1,14 @@
 <script setup lang="ts">
-// App component placeholder
+import { useChatStore } from '@chat/stores/chatStore';
+import JoinRoom from '@chat/views/JoinRoom.vue';
+import ChatRoom from '@chat/views/ChatRoom.vue';
+
+const chatStore = useChatStore();
 </script>
 
 <template>
   <div id="app">
-    <h1>Crisp Chat</h1>
+    <JoinRoom v-if="!chatStore.isInRoom" />
+    <ChatRoom v-else />
   </div>
 </template>
-
-<style scoped>
-/* App styles */
-</style>
