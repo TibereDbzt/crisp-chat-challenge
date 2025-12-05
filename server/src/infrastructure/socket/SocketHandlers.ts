@@ -1,10 +1,12 @@
 import type { Server, Socket } from 'socket.io';
 import type { IJoinRoomUseCase } from '@/domain/use-cases/join-room';
 import type { ISendMessageUseCase } from '@/domain/use-cases/send-message';
+import type { ILeaveRoomUseCase } from '@/domain/use-cases/leave-room';
 
 export function createSocketHandlers(
   joinRoomUseCase: IJoinRoomUseCase,
-  sendMessageUseCase: ISendMessageUseCase
+  sendMessageUseCase: ISendMessageUseCase,
+  leaveRoomUseCase: ILeaveRoomUseCase
 ) {
   return function handleConnection(socket: Socket, io: Server): void {
     socket.on('room:join', async (data: { username: string; roomName: string }, callback) => {
@@ -41,5 +43,18 @@ export function createSocketHandlers(
         }
       }
     );
+
+    socket.on('disconnect', () => {
+      try {
+        const room = leaveRoomUseCase(socket.id);
+        
+        if (room) {
+          const usernames = room.users.map((u) => u.username);
+          io.to(room.name).emit('room:users', { users: usernames });
+        }
+      } catch (error) {
+        console.error('[Socket] Error handling disconnect:', error);
+      }
+    });
   };
 }
