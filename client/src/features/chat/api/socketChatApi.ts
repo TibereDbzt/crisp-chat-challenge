@@ -49,7 +49,7 @@ export function createSocketChatApi(serverUrl: string): ChatApi {
       socket?.on('room:users', callback);
     },
 
-    onRoomMessages(callback: (data: { messages: Message[] }) => void): void {
+    onRoomMessages(callback: (data: { messages: Message[]; hasMoreMessages: boolean }) => void): void {
       socket?.on('room:messages', callback);
     },
 
@@ -61,7 +61,7 @@ export function createSocketChatApi(serverUrl: string): ChatApi {
       socket?.off('room:users', callback);
     },
 
-    offRoomMessages(callback: (data: { messages: Message[] }) => void): void {
+    offRoomMessages(callback: (data: { messages: Message[]; hasMoreMessages: boolean }) => void): void {
       socket?.off('room:messages', callback);
     },
   };

@@ -9,6 +9,7 @@ export function useChat(api: ChatApi) {
   const users = ref<string[]>([]);
   const error = ref<string>('');
   const isConnected = ref(false);
+  const hasMoreMessages = ref(false);
 
   const isInRoom = computed(() => !!currentUser.value && !!currentRoom.value);
   
@@ -24,8 +25,9 @@ export function useChat(api: ChatApi) {
     users.value = data.users;
   }
 
-  const handleRoomMessages = (data: { messages: Message[] }) => {
+  const handleRoomMessages = (data: { messages: Message[]; hasMoreMessages: boolean; }) => {
     messages.value = data.messages;
+    hasMoreMessages.value = data.hasMoreMessages;
   }
 
   const setupListeners = () => {
@@ -84,6 +86,7 @@ export function useChat(api: ChatApi) {
     messages.value = [];
     users.value = [];
     isConnected.value = false;
+    hasMoreMessages.value = false;
   }
 
   return {
@@ -94,6 +97,7 @@ export function useChat(api: ChatApi) {
     error,
     isConnected,
     isInRoom,
+    hasMoreMessages,
     joinRoom,
     sendMessage,
     leaveRoom,

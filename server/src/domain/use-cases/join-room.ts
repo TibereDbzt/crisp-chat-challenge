@@ -1,26 +1,30 @@
 import type { User } from '@/domain/entities/User';
 import type { Room } from '@/domain/entities/Room';
+import type { Message } from '@/domain/entities/Message';
 import type { RoomRepository } from '@/domain/repositories/RoomRepository';
 import type { UserRepository } from '@/domain/repositories/UserRepository';
 import { v4 as uuidv4 } from 'uuid';
+
+export interface JoinRoomResult {
+  user: User;
+  room: Room;
+  lastTenMessages: Message[];
+  hasMoreMessages: boolean;
+}
 
 export type IJoinRoomUseCase = (
   username: string,
   roomName: string,
   socketId: string
-) => {
-  user: User;
-  room: Room;
-};
+) => JoinRoomResult;
+
+const MAX_VISIBLE_PREVIOUS_MESSAGES = 10 as const;
 
 export function createJoinRoomUseCase(
   roomRepository: RoomRepository,
   userRepository: UserRepository
 ): IJoinRoomUseCase {
-  return function joinRoom(username: string, roomName: string, socketId: string): {
-    user: User;
-    room: Room;
-  } {
+  return function joinRoom(username: string, roomName: string, socketId: string): JoinRoomResult {
     let room = roomRepository.findByName(roomName);
     if (!room) {
         room = {
@@ -45,6 +49,15 @@ export function createJoinRoomUseCase(
     roomRepository.save(updatedRoom);
     userRepository.save(user);
 
-    return { user, room: updatedRoom };
+    const totalMessages = updatedRoom.messages.length;
+    const lastTenMessages = updatedRoom.messages.slice(-MAX_VISIBLE_PREVIOUS_MESSAGES);
+    const hasMoreMessages = totalMessages > MAX_VISIBLE_PREVIOUS_MESSAGES;
+
+    return { 
+      user, 
+      room: updatedRoom,
+      lastTenMessages,
+      hasMoreMessages,
+    };
   };
 }

@@ -9,13 +9,17 @@ export function createSocketHandlers(
   return function handleConnection(socket: Socket, io: Server): void {
     socket.on('room:join', async (data: { username: string; roomName: string }, callback) => {
       try {
-        const { user, room } = joinRoomUseCase(data.username, data.roomName, socket.id);
+        const { user, room, lastTenMessages, hasMoreMessages } = joinRoomUseCase(data.username, data.roomName, socket.id);
 
         socket.join(room.name);
 
-        callback({ success: true, user });
+        callback({ success: true, user: user });
 
-        socket.emit('room:messages', { messages: room.messages });
+        // Envoyer les messages récents fournis par le use case
+        socket.emit('room:messages', { 
+          messages: lastTenMessages,
+          hasMoreMessages: hasMoreMessages,
+        });
 
         const usernames = room.users.map((u) => u.username);
         io.to(room.name).emit('room:users', { users: usernames });

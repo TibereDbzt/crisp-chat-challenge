@@ -22,6 +22,19 @@
           <Card class="flex-1 flex flex-col overflow-hidden">
             <ScrollArea class="flex-1 p-4">
               <div ref="messagesContainer" class="space-y-4">
+                <div v-if="chatStore.messages.length > 0" class="flex justify-center py-4">
+                  <div class="bg-muted/50 rounded-lg px-4 py-2 text-center">
+                    <p class="text-xs text-muted-foreground">
+                      <span v-if="chatStore.hasMoreMessages">
+                        📜 Vous avez rejoint un salon existant. Vous ne voyez que les 10 derniers messages avant votre connexion.
+                      </span>
+                      <span v-else>
+                        🎉 Début de la conversation
+                      </span>
+                    </p>
+                  </div>
+                </div>
+
                 <div
                   v-for="message in chatStore.messages"
                   :key="message.id"
