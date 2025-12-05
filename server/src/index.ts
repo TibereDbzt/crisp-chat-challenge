@@ -3,9 +3,17 @@ import { createServer } from 'http';
 import { Server } from 'socket.io';
 import cors from 'cors';
 
-import { createInMemoryRoomRepository, createInMemoryUserRepository } from '@/infrastructure';
-import { createJoinRoomUseCase, createSendMessageUseCase, createLeaveRoomUseCase, createGetRoomsUseCase } from '@/domain';
-import { createSocketHandlers } from '@/infrastructure';
+import {
+  createInMemoryRoomRepository,
+  createInMemoryUserRepository,
+  createSocketHandlers,
+} from '@/infrastructure';
+import {
+  createJoinRoomUseCase,
+  createSendMessageUseCase,
+  createLeaveRoomUseCase,
+  createGetRoomsUseCase,
+} from '@/domain';
 
 const PORT = Number(process.env.PORT) || 3001;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';
@@ -36,7 +44,12 @@ const sendMessageUseCase = createSendMessageUseCase(roomRepository);
 const leaveRoomUseCase = createLeaveRoomUseCase(roomRepository, userRepository);
 const getRoomsUseCase = createGetRoomsUseCase(roomRepository);
 
-const handleConnection = createSocketHandlers(joinRoomUseCase, sendMessageUseCase, leaveRoomUseCase, getRoomsUseCase);
+const handleConnection = createSocketHandlers(
+  joinRoomUseCase,
+  sendMessageUseCase,
+  leaveRoomUseCase,
+  getRoomsUseCase
+);
 
 // Socket.io connection handler
 io.on('connection', (socket) => {

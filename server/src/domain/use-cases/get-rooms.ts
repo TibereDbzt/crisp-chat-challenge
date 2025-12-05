@@ -7,12 +7,10 @@ export interface RoomSummary {
 
 export type IGetRoomsUseCase = () => RoomSummary[];
 
-export function createGetRoomsUseCase(
-  roomRepository: RoomRepository
-): IGetRoomsUseCase {
+export function createGetRoomsUseCase(roomRepository: RoomRepository): IGetRoomsUseCase {
   return function getRooms(): RoomSummary[] {
     const rooms = roomRepository.findAll();
-    
+
     return rooms.map((room) => ({
       name: room.name,
       userCount: room.users.length,

@@ -13,15 +13,19 @@ export function createSocketHandlers(
   return function handleConnection(socket: Socket, io: Server): void {
     socket.on('room:join', async (data: { username: string; roomName: string }, callback) => {
       try {
-        const { user, room, lastTenMessages, hasMoreMessages } = joinRoomUseCase(data.username, data.roomName, socket.id);
+        const { user, room, lastTenMessages, hasMoreMessages } = joinRoomUseCase(
+          data.username,
+          data.roomName,
+          socket.id
+        );
 
         socket.join(room.name);
 
-        callback({ success: true, user: user });
+        callback({ success: true, user });
 
-        socket.emit('room:messages', { 
+        socket.emit('room:messages', {
           messages: lastTenMessages,
-          hasMoreMessages: hasMoreMessages,
+          hasMoreMessages,
         });
 
         const usernames = room.users.map((u) => u.username);
@@ -38,7 +42,12 @@ export function createSocketHandlers(
       'message:send',
       (data: { content: string; username: string; userId: string; roomName: string }) => {
         try {
-          const message = sendMessageUseCase(data.content, data.username, data.userId, data.roomName);
+          const message = sendMessageUseCase(
+            data.content,
+            data.username,
+            data.userId,
+            data.roomName
+          );
 
           io.to(message.room).emit('message:new', message);
         } catch (error) {
@@ -60,7 +69,7 @@ export function createSocketHandlers(
     socket.on('disconnect', () => {
       try {
         const room = leaveRoomUseCase(socket.id);
-        
+
         if (room) {
           const usernames = room.users.map((u) => u.username);
           io.to(room.name).emit('room:users', { users: usernames });

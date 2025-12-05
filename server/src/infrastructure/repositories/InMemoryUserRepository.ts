@@ -8,22 +8,16 @@ export function createInMemoryUserRepository(): UserRepository {
     save(user: User): void {
       users.set(user.id, user);
     },
-    
+
     findBySocketId(socketId: string): User | null {
-      for (const user of users.values()) {
-        if (user.socketId === socketId) {
-          return user;
-        }
-      }
-      return null;
+      const user = Array.from(users.values()).find((u) => u.socketId === socketId);
+      return user ?? null;
     },
-    
+
     deleteBySocketId(socketId: string): void {
-      for (const [userId, user] of users.entries()) {
-        if (user.socketId === socketId) {
-          users.delete(userId);
-          break;
-        }
+      const entry = Array.from(users.entries()).find(([, user]) => user.socketId === socketId);
+      if (entry) {
+        users.delete(entry[0]);
       }
     },
   };

@@ -1,9 +1,9 @@
+import { v4 as uuidv4 } from 'uuid';
 import type { User } from '@/domain/entities/User';
 import type { Room } from '@/domain/entities/Room';
 import type { Message } from '@/domain/entities/Message';
 import type { RoomRepository } from '@/domain/repositories/RoomRepository';
 import type { UserRepository } from '@/domain/repositories/UserRepository';
-import { v4 as uuidv4 } from 'uuid';
 
 export interface JoinRoomResult {
   user: User;
@@ -27,11 +27,11 @@ export function createJoinRoomUseCase(
   return function joinRoom(username: string, roomName: string, socketId: string): JoinRoomResult {
     let room = roomRepository.findByName(roomName);
     if (!room) {
-        room = {
-            name: roomName,
-            users: [],
-            messages: [],
-        }
+      room = {
+        name: roomName,
+        users: [],
+        messages: [],
+      };
     }
 
     const user: User = {
@@ -42,9 +42,9 @@ export function createJoinRoomUseCase(
     };
 
     const updatedRoom = {
-        ...room,
-        users: [...room.users, user],
-    }
+      ...room,
+      users: [...room.users, user],
+    };
 
     roomRepository.save(updatedRoom);
     userRepository.save(user);
@@ -53,8 +53,8 @@ export function createJoinRoomUseCase(
     const lastTenMessages = updatedRoom.messages.slice(-MAX_VISIBLE_PREVIOUS_MESSAGES);
     const hasMoreMessages = totalMessages > MAX_VISIBLE_PREVIOUS_MESSAGES;
 
-    return { 
-      user, 
+    return {
+      user,
       room: updatedRoom,
       lastTenMessages,
       hasMoreMessages,

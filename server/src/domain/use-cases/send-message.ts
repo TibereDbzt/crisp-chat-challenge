@@ -1,6 +1,6 @@
+import { v4 as uuidv4 } from 'uuid';
 import type { Message } from '@/domain/entities/Message';
 import type { RoomRepository } from '@/domain/repositories/RoomRepository';
-import { v4 as uuidv4 } from 'uuid';
 
 export type ISendMessageUseCase = (
   content: string,
@@ -36,8 +36,8 @@ export function createSendMessageUseCase(roomRepository: RoomRepository): ISendM
     };
 
     const updatedRoom = {
-        ...room,
-        messages:[...room.messages, message]
+      ...room,
+      messages: [...room.messages, message],
     };
 
     roomRepository.save(updatedRoom);

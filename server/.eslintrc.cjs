@@ -18,6 +18,14 @@ module.exports = {
     project: './tsconfig.json',
   },
   plugins: ['@typescript-eslint'],
+  settings: {
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+        project: './tsconfig.json',
+      },
+    },
+  },
   rules: {
     // Import rules
     'import/prefer-default-export': 'off',
@@ -38,5 +46,5 @@ module.exports = {
     'no-console': 'off', // Allow console in server
     'class-methods-use-this': 'off',
   },
-  ignorePatterns: ['dist', 'node_modules', '*.config.js', '*.config.ts'],
+  ignorePatterns: ['dist', 'node_modules', '*.config.js', '*.config.ts', '.eslintrc.cjs'],
 };
