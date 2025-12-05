@@ -4,7 +4,7 @@ import { Server } from 'socket.io';
 import cors from 'cors';
 
 import { createInMemoryRoomRepository, createInMemoryUserRepository } from '@/infrastructure';
-import { createJoinRoomUseCase, createSendMessageUseCase, createLeaveRoomUseCase } from '@/domain';
+import { createJoinRoomUseCase, createSendMessageUseCase, createLeaveRoomUseCase, createGetRoomsUseCase } from '@/domain';
 import { createSocketHandlers } from '@/infrastructure';
 
 const PORT = Number(process.env.PORT) || 3001;
@@ -34,8 +34,9 @@ const userRepository = createInMemoryUserRepository();
 const joinRoomUseCase = createJoinRoomUseCase(roomRepository, userRepository);
 const sendMessageUseCase = createSendMessageUseCase(roomRepository);
 const leaveRoomUseCase = createLeaveRoomUseCase(roomRepository, userRepository);
+const getRoomsUseCase = createGetRoomsUseCase(roomRepository);
 
-const handleConnection = createSocketHandlers(joinRoomUseCase, sendMessageUseCase, leaveRoomUseCase);
+const handleConnection = createSocketHandlers(joinRoomUseCase, sendMessageUseCase, leaveRoomUseCase, getRoomsUseCase);
 
 // Socket.io connection handler
 io.on('connection', (socket) => {

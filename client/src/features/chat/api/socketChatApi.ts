@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
 import type { ChatApi } from '@chat/api/chatApi';
-import type { Message, JoinRoomResponse } from '@chat/types';
+import type { Message, JoinRoomResponse, RoomSummary } from '@chat/types';
 
 export function createSocketChatApi(serverUrl: string): ChatApi {
   let socket: Socket | null = null;
@@ -18,6 +18,19 @@ export function createSocketChatApi(serverUrl: string): ChatApi {
 
     isConnected(): boolean {
       return socket?.connected || false;
+    },
+
+    async getRooms(): Promise<{ success: boolean; rooms: RoomSummary[]; error?: string }> {
+      return new Promise((resolve) => {
+        if (!socket) {
+          resolve({ success: false, rooms: [], error: 'Socket not connected' });
+          return;
+        }
+
+        socket.emit('rooms:list', (response: { success: boolean; rooms: RoomSummary[]; error?: string }) => {
+          resolve(response);
+        });
+      });
     },
 
     async joinRoom(username: string, roomName: string): Promise<JoinRoomResponse> {

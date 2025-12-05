@@ -2,11 +2,13 @@ import type { Server, Socket } from 'socket.io';
 import type { IJoinRoomUseCase } from '@/domain/use-cases/join-room';
 import type { ISendMessageUseCase } from '@/domain/use-cases/send-message';
 import type { ILeaveRoomUseCase } from '@/domain/use-cases/leave-room';
+import type { IGetRoomsUseCase } from '@/domain/use-cases/get-rooms';
 
 export function createSocketHandlers(
   joinRoomUseCase: IJoinRoomUseCase,
   sendMessageUseCase: ISendMessageUseCase,
-  leaveRoomUseCase: ILeaveRoomUseCase
+  leaveRoomUseCase: ILeaveRoomUseCase,
+  getRoomsUseCase: IGetRoomsUseCase
 ) {
   return function handleConnection(socket: Socket, io: Server): void {
     socket.on('room:join', async (data: { username: string; roomName: string }, callback) => {
@@ -43,6 +45,16 @@ export function createSocketHandlers(
         }
       }
     );
+
+    socket.on('rooms:list', (callback) => {
+      try {
+        const rooms = getRoomsUseCase();
+        callback({ success: true, rooms });
+      } catch (error) {
+        const errorMessage = error instanceof Error ? error.message : 'Failed to get rooms';
+        callback({ success: false, error: errorMessage, rooms: [] });
+      }
+    });
 
     socket.on('disconnect', () => {
       try {

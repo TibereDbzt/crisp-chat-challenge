@@ -12,5 +12,9 @@ export function createInMemoryRoomRepository(): RoomRepository {
     save(room: Room): void {
       rooms.set(room.name, room);
     },
+
+    findAll(): Room[] {
+      return Array.from(rooms.values());
+    },
   };
 }

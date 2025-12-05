@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue';
 import type { ChatApi } from '@chat/api/chatApi';
-import type { User, Message, Room } from '@chat/types';
+import type { User, Message, Room, RoomSummary } from '@chat/types';
 
 export function useChat(api: ChatApi) {
   const currentUser = ref<User | null>(null);
@@ -86,6 +86,21 @@ export function useChat(api: ChatApi) {
     api.sendMessage(content, currentUser.value.username, currentUser.value.id, currentRoom.value.name);
   }
 
+  const getRooms = async (): Promise<{ success: boolean; rooms: RoomSummary[]; error?: string }> => {
+    try {
+      if (!api.isConnected()) {
+        api.connect();
+      }
+      return await api.getRooms();
+    } catch (err) {
+      return {
+        success: false,
+        rooms: [],
+        error: err instanceof Error ? err.message : 'Unknown error'
+      };
+    }
+  }
+
   const leaveRoom = () => {
     cleanupListeners();
     api.disconnect();
@@ -102,6 +117,7 @@ export function useChat(api: ChatApi) {
     error,
     isConnected,
     isInRoom,
+    getRooms,
     joinRoom,
     sendMessage,
     leaveRoom,

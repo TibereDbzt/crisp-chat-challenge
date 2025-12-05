@@ -1,10 +1,11 @@
-import type { Message, JoinRoomResponse } from '@chat/types';
+import type { Message, JoinRoomResponse, RoomSummary } from '@chat/types';
 
 export interface ChatApi {
   connect(): void;
   disconnect(): void;
   isConnected(): boolean;
   
+  getRooms(): Promise<{ success: boolean; rooms: RoomSummary[]; error?: string }>;
   joinRoom(username: string, roomName: string): Promise<JoinRoomResponse>;
   sendMessage(content: string, username: string, userId: string, roomName: string): void;
   

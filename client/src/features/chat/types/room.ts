@@ -6,3 +6,8 @@ export interface Room {
   users: string[];
   hasMoreMessages: boolean;
 }
+
+export interface RoomSummary {
+  name: string;
+  userCount: number;
+}
