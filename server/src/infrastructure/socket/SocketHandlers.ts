@@ -9,14 +9,14 @@ export function createSocketHandlers(
   return function handleConnection(socket: Socket, io: Server): void {
     socket.on('room:join', async (data: { username: string; roomName: string }, callback) => {
       try {
-        const user = joinRoomUseCase(data.username, data.roomName, socket.id);
+        const { user, room } = joinRoomUseCase(data.username, data.roomName, socket.id);
 
-        socket.join(user.room);
+        socket.join(room.name);
 
         callback({ success: true, user });
 
-        const room = io.sockets.adapter.rooms.get(user.room);
-        io.to(user.room).emit('room:users', { users: Array.from(room || []) });
+        const usernames = room.users.map((u) => u.username);
+        io.to(room.name).emit('room:users', { users: usernames });
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to join room';
         callback({ success: false, error: errorMessage });

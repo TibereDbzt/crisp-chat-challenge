@@ -4,22 +4,23 @@ import type { RoomRepository } from '@/domain/repositories/RoomRepository';
 import type { UserRepository } from '@/domain/repositories/UserRepository';
 import { v4 as uuidv4 } from 'uuid';
 
-export interface JoinRoomResult {
-  user: User;
-  room: Room;
-}
-
 export type IJoinRoomUseCase = (
   username: string,
   roomName: string,
   socketId: string
-) => JoinRoomResult;
+) => {
+  user: User;
+  room: Room;
+};
 
 export function createJoinRoomUseCase(
   roomRepository: RoomRepository,
   userRepository: UserRepository
 ): IJoinRoomUseCase {
-  return function joinRoom(username: string, roomName: string, socketId: string): JoinRoomResult {
+  return function joinRoom(username: string, roomName: string, socketId: string): {
+    user: User;
+    room: Room;
+  } {
     let room = roomRepository.findByName(roomName);
     if (!room) {
         room = {
