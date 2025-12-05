@@ -24,16 +24,46 @@
               :key="room.name"
               @click="selectRoom(room.name)"
               :disabled="isLoading"
-              class="w-full p-4 text-left rounded-lg border bg-card hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              :class="[
+                'w-full p-4 text-left rounded-lg border transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed',
+                isRoomSelected(room.name)
+                  ? 'border-primary bg-primary/5 ring-primary/20'
+                  : 'border-border bg-card hover:border-primary/50 hover:bg-accent'
+              ]"
             >
               <div class="flex items-center justify-between">
-                <div>
-                  <p class="font-medium">{{ room.name }}</p>
-                  <p class="text-xs text-muted-foreground mt-1">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <p 
+                      :class="[
+                        'font-semibold',
+                        isRoomSelected(room.name) ? 'text-primary' : 'text-foreground'
+                      ]"
+                    >
+                      {{ room.name }}
+                    </p>
+                    <Check 
+                      v-if="isRoomSelected(room.name)"
+                      class="h-4 w-4 text-primary"
+                    />
+                  </div>
+                  <p 
+                    :class="[
+                      'text-xs mt-1',
+                      isRoomSelected(room.name) ? 'text-primary/70' : 'text-muted-foreground'
+                    ]"
+                  >
                     {{ room.userCount }} {{ room.userCount === 1 ? 'utilisateur' : 'utilisateurs' }}
                   </p>
                 </div>
-                <div class="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary text-sm font-semibold">
+                <div 
+                  :class="[
+                    'flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold',
+                    isRoomSelected(room.name)
+                      ? 'bg-primary text-primary-foreground shadow-sm'
+                      : 'bg-primary/10 text-primary'
+                  ]"
+                >
                   {{ room.userCount }}
                 </div>
               </div>
@@ -107,7 +137,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted } from 'vue';
-import { MessageSquare } from 'lucide-vue-next';
+import { MessageSquare, Check } from 'lucide-vue-next';
 import { useChatStore } from '@chat/stores/chatStore';
 import { createSocketChatApi } from '@chat/api/socketChatApi';
 import { Button } from '@components/button';
@@ -125,6 +155,10 @@ const roomName = ref('');
 const isLoading = ref(false);
 const isLoadingRooms = ref(false);
 const rooms = ref<RoomSummary[]>([]);
+
+const isRoomSelected = (roomNameToCheck: string): boolean => {
+  return roomName.value.trim().toLowerCase() === roomNameToCheck.toLowerCase();
+}
 
 const loadRooms = async () => {
   isLoadingRooms.value = true;
