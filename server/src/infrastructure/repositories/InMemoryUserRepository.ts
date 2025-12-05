@@ -1,5 +1,5 @@
-import type { User } from '@/domain/entities/User';
-import type { UserRepository } from '@/domain/repositories/UserRepository';
+import type { User } from '@/domain/entities/User.js';
+import type { UserRepository } from '@/domain/repositories/UserRepository.js';
 
 export function createInMemoryUserRepository(): UserRepository {
   const users = new Map<string, User>();

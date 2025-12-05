@@ -29,13 +29,8 @@ module.exports = {
   rules: {
     // Import rules
     'import/prefer-default-export': 'off',
-    'import/extensions': [
-      'error',
-      'ignorePackages',
-      {
-        ts: 'never',
-      },
-    ],
+    // Disabled because we use .js extensions in TS files for ES modules compatibility
+    'import/extensions': 'off',
     
     // TypeScript rules
     '@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],

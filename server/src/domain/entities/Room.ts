@@ -1,5 +1,5 @@
-import type { User } from '@/domain/entities/User';
-import type { Message } from '@/domain/entities/Message';
+import type { User } from '@/domain/entities/User.js';
+import type { Message } from '@/domain/entities/Message.js';
 
 export interface Room {
   name: string;

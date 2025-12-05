@@ -1,6 +1,6 @@
-import type { Room } from '@/domain/entities/Room';
-import type { RoomRepository } from '@/domain/repositories/RoomRepository';
-import type { UserRepository } from '@/domain/repositories/UserRepository';
+import type { Room } from '@/domain/entities/Room.js';
+import type { RoomRepository } from '@/domain/repositories/RoomRepository.js';
+import type { UserRepository } from '@/domain/repositories/UserRepository.js';
 
 export type ILeaveRoomUseCase = (socketId: string) => Room | null;
 

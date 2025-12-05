@@ -1,5 +1,5 @@
-import type { Room } from '@/domain/entities/Room';
-import type { RoomRepository } from '@/domain/repositories/RoomRepository';
+import type { Room } from '@/domain/entities/Room.js';
+import type { RoomRepository } from '@/domain/repositories/RoomRepository.js';
 
 export function createInMemoryRoomRepository(): RoomRepository {
   const rooms = new Map<string, Room>();

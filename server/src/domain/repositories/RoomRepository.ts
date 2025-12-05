@@ -1,4 +1,4 @@
-import type { Room } from '@/domain/entities/Room';
+import type { Room } from '@/domain/entities/Room.js';
 
 export interface RoomRepository {
   findByName(name: string): Room | null;

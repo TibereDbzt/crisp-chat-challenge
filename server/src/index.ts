@@ -7,13 +7,13 @@ import {
   createInMemoryRoomRepository,
   createInMemoryUserRepository,
   createSocketHandlers,
-} from '@/infrastructure';
+} from '@/infrastructure/index.js';
 import {
   createJoinRoomUseCase,
   createSendMessageUseCase,
   createLeaveRoomUseCase,
   createGetRoomsUseCase,
-} from '@/domain';
+} from '@/domain/index.js';
 
 const PORT = Number(process.env.PORT) || 3001;
 const CLIENT_URL = process.env.CLIENT_URL || 'http://localhost:5173';

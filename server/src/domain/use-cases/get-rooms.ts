@@ -1,4 +1,4 @@
-import type { RoomRepository } from '@/domain/repositories/RoomRepository';
+import type { RoomRepository } from '@/domain/repositories/RoomRepository.js';
 
 export interface RoomSummary {
   name: string;

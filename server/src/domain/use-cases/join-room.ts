@@ -1,9 +1,9 @@
 import { v4 as uuidv4 } from 'uuid';
-import type { User } from '@/domain/entities/User';
-import type { Room } from '@/domain/entities/Room';
-import type { Message } from '@/domain/entities/Message';
-import type { RoomRepository } from '@/domain/repositories/RoomRepository';
-import type { UserRepository } from '@/domain/repositories/UserRepository';
+import type { User } from '@/domain/entities/User.js';
+import type { Room } from '@/domain/entities/Room.js';
+import type { Message } from '@/domain/entities/Message.js';
+import type { RoomRepository } from '@/domain/repositories/RoomRepository.js';
+import type { UserRepository } from '@/domain/repositories/UserRepository.js';
 
 export interface JoinRoomResult {
   user: User;

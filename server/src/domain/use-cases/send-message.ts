@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
-import type { Message } from '@/domain/entities/Message';
-import type { RoomRepository } from '@/domain/repositories/RoomRepository';
+import type { Message } from '@/domain/entities/Message.js';
+import type { RoomRepository } from '@/domain/repositories/RoomRepository.js';
 
 export type ISendMessageUseCase = (
   content: string,

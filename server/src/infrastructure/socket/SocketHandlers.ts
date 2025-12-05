@@ -1,8 +1,8 @@
 import type { Server, Socket } from 'socket.io';
-import type { IJoinRoomUseCase } from '@/domain/use-cases/join-room';
-import type { ISendMessageUseCase } from '@/domain/use-cases/send-message';
-import type { ILeaveRoomUseCase } from '@/domain/use-cases/leave-room';
-import type { IGetRoomsUseCase } from '@/domain/use-cases/get-rooms';
+import type { IJoinRoomUseCase } from '@/domain/use-cases/join-room.js';
+import type { ISendMessageUseCase } from '@/domain/use-cases/send-message.js';
+import type { ILeaveRoomUseCase } from '@/domain/use-cases/leave-room.js';
+import type { IGetRoomsUseCase } from '@/domain/use-cases/get-rooms.js';
 
 export function createSocketHandlers(
   joinRoomUseCase: IJoinRoomUseCase,

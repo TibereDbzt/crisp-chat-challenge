@@ -1,2 +1,2 @@
-export * from '@/infrastructure/repositories';
-export * from '@/infrastructure/socket';
+export * from '@/infrastructure/repositories/index.js';
+export * from '@/infrastructure/socket/index.js';
