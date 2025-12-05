@@ -1,25 +1,25 @@
 <script setup lang="ts">
-import { ScrollAreaCorner, ScrollAreaRoot, ScrollAreaViewport } from 'radix-vue'
-import type { HTMLAttributes } from 'vue'
-import { cn } from '@/lib/utils'
-import ScrollBar from './ScrollBar.vue'
+import { ScrollAreaCorner, ScrollAreaRoot, ScrollAreaViewport } from 'radix-vue';
+import type { HTMLAttributes } from 'vue';
 import { ref, nextTick, watch, onMounted, onUnmounted } from 'vue';
 import { ArrowDown } from 'lucide-vue-next';
+import { cn } from '@/lib/utils';
+import ScrollBar from './ScrollBar.vue';
 
 const props = withDefaults(
   defineProps<{
-    class?: HTMLAttributes['class']
-    orientation?: 'vertical' | 'horizontal'
-    autoScrollTrigger?: unknown
-    showNewContentButton?: boolean
+    class?: HTMLAttributes['class'];
+    orientation?: 'vertical' | 'horizontal';
+    autoScrollTrigger?: unknown;
+    showNewContentButton?: boolean;
   }>(),
   {
     orientation: 'vertical',
     showNewContentButton: false,
-  },
-)
+  }
+);
 
-const scrollAreaRef = ref<any>(null);
+const scrollAreaRef = ref<InstanceType<typeof ScrollAreaRoot> | null>(null);
 const showFloatingButton = ref(false);
 
 const isNearBottom = (): boolean => {
@@ -27,7 +27,7 @@ const isNearBottom = (): boolean => {
   if (!viewport) return false;
   const threshold = 100;
   return viewport.scrollHeight - viewport.scrollTop - viewport.clientHeight < threshold;
-}
+};
 
 const scrollToBottom = (smooth = false) => {
   nextTick(() => {
@@ -39,13 +39,13 @@ const scrollToBottom = (smooth = false) => {
       });
     }
   });
-}
+};
 
 const handleScrollChange = () => {
   if (isNearBottom()) {
     showFloatingButton.value = false;
   }
-}
+};
 
 const handleNewContent = () => {
   if (props.showNewContentButton) {
@@ -57,12 +57,12 @@ const handleNewContent = () => {
   } else {
     scrollToBottom();
   }
-}
+};
 
 const handleButtonClick = () => {
   showFloatingButton.value = false;
   scrollToBottom(true);
-}
+};
 
 watch(() => props.autoScrollTrigger, handleNewContent, { deep: true });
 
@@ -92,7 +92,7 @@ defineExpose({
     </ScrollAreaViewport>
     <ScrollBar :orientation="orientation" />
     <ScrollAreaCorner />
-    
+
     <Transition
       enter-active-class="transition-all duration-300 ease-out"
       enter-from-class="opacity-0 translate-y-4 scale-95"
@@ -103,8 +103,8 @@ defineExpose({
     >
       <button
         v-if="showFloatingButton && showNewContentButton"
-        @click="handleButtonClick"
         class="absolute bottom-4 left-1/2 -translate-x-1/2 z-10 flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 hover:shadow-xl transition-all duration-200 text-sm font-medium whitespace-nowrap"
+        @click="handleButtonClick"
       >
         <ArrowDown class="h-4 w-4" />
         Nouveaux messages

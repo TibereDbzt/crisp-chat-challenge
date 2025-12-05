@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { ScrollAreaScrollbar, ScrollAreaThumb } from 'radix-vue'
-import { cn } from '@/lib/utils'
+import { ScrollAreaScrollbar, ScrollAreaThumb } from 'radix-vue';
+import { cn } from '@/lib/utils';
 
-const props = withDefaults(
+withDefaults(
   defineProps<{
-    orientation?: 'vertical' | 'horizontal'
+    orientation?: 'vertical' | 'horizontal';
   }>(),
   {
     orientation: 'vertical',
-  },
-)
+  }
+);
 </script>
 
 <template>
@@ -18,10 +18,8 @@ const props = withDefaults(
     :class="
       cn(
         'flex touch-none select-none transition-colors',
-        orientation === 'vertical'
-          && 'h-full w-2.5 border-l border-l-transparent p-[1px]',
-        orientation === 'horizontal'
-          && 'h-2.5 flex-col border-t border-t-transparent p-[1px]',
+        orientation === 'vertical' && 'h-full w-2.5 border-l border-l-transparent p-[1px]',
+        orientation === 'horizontal' && 'h-2.5 flex-col border-t border-t-transparent p-[1px]'
       )
     "
   >

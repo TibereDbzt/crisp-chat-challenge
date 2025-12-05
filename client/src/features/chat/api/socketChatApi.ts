@@ -27,9 +27,12 @@ export function createSocketChatApi(serverUrl: string): ChatApi {
           return;
         }
 
-        socket.emit('rooms:list', (response: { success: boolean; rooms: RoomSummary[]; error?: string }) => {
-          resolve(response);
-        });
+        socket.emit(
+          'rooms:list',
+          (response: { success: boolean; rooms: RoomSummary[]; error?: string }) => {
+            resolve(response);
+          }
+        );
       });
     },
 
@@ -62,7 +65,9 @@ export function createSocketChatApi(serverUrl: string): ChatApi {
       socket?.on('room:users', callback);
     },
 
-    onRoomMessages(callback: (data: { messages: Message[]; hasMoreMessages: boolean }) => void): void {
+    onRoomMessages(
+      callback: (data: { messages: Message[]; hasMoreMessages: boolean }) => void
+    ): void {
       socket?.on('room:messages', callback);
     },
 
@@ -74,7 +79,9 @@ export function createSocketChatApi(serverUrl: string): ChatApi {
       socket?.off('room:users', callback);
     },
 
-    offRoomMessages(callback: (data: { messages: Message[]; hasMoreMessages: boolean }) => void): void {
+    offRoomMessages(
+      callback: (data: { messages: Message[]; hasMoreMessages: boolean }) => void
+    ): void {
       socket?.off('room:messages', callback);
     },
 

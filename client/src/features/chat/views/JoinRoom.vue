@@ -1,5 +1,7 @@
 <template>
-  <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4">
+  <div
+    class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4"
+  >
     <Card class="w-full max-w-2xl p-8 space-y-6 transition-all duration-300 ease-in-out">
       <div class="flex flex-col items-center space-y-2 text-center">
         <div class="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
@@ -13,9 +15,7 @@
 
       <div class="space-y-6">
         <div class="space-y-2 px-1">
-          <label for="username" class="text-sm font-medium leading-none">
-            Nom d'utilisateur
-          </label>
+          <label for="username" class="text-sm font-medium leading-none"> Nom d'utilisateur </label>
           <Input
             id="username"
             v-model="username"
@@ -26,18 +26,20 @@
           />
         </div>
 
-        <div 
+        <div
           :class="[
             'grid transition-all duration-300 ease-in-out',
-            username.trim() ? 'grid-rows-[1fr] opacity-100 visible' : 'grid-rows-[0fr] opacity-0 invisible'
+            username.trim()
+              ? 'grid-rows-[1fr] opacity-100 visible'
+              : 'grid-rows-[0fr] opacity-0 invisible',
           ]"
           :aria-hidden="!username.trim()"
         >
           <div class="overflow-hidden p-1">
-            <div 
+            <div
               :class="[
                 'transition-transform duration-300 ease-out',
-                username.trim() ? 'translate-y-0' : '-translate-y-2'
+                username.trim() ? 'translate-y-0' : '-translate-y-2',
               ]"
             >
               <RoomSelect
@@ -92,11 +94,11 @@ const loadRooms = async () => {
   } finally {
     isLoadingRooms.value = false;
   }
-}
+};
 
 const handleJoinRoom = async (selectedRoomName?: string) => {
   const targetRoom = selectedRoomName || roomName.value.trim();
-  
+
   if (!username.value.trim() || !targetRoom) return;
 
   isLoading.value = true;
@@ -106,11 +108,11 @@ const handleJoinRoom = async (selectedRoomName?: string) => {
   if (!success) {
     console.error('Failed to join room:', chatStore.error);
   }
-}
+};
 
 const handleRoomsUpdated = () => {
   loadRooms();
-}
+};
 
 onMounted(() => {
   api.connect();

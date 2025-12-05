@@ -20,17 +20,20 @@
       <div class="flex-1 flex overflow-hidden">
         <div class="flex-1 flex flex-col p-4">
           <Card class="flex-1 flex flex-col overflow-hidden">
-            <ScrollArea class="flex-1 p-4" :autoScrollTrigger="chatStore.messages" showNewContentButton>
+            <ScrollArea
+              class="flex-1 p-4"
+              :auto-scroll-trigger="chatStore.messages"
+              show-new-content-button
+            >
               <div>
                 <div v-if="chatStore.messages.length > 0" class="flex justify-center py-4">
                   <div class="bg-muted/50 rounded-lg px-4 py-2 text-center">
                     <p class="text-xs text-muted-foreground">
                       <span v-if="chatStore.currentRoom?.hasMoreMessages">
-                        📜 Vous avez rejoint un salon existant. Vous ne voyez que les 10 derniers messages avant votre connexion.
+                        📜 Vous avez rejoint un salon existant. Vous ne voyez que les 10 derniers
+                        messages avant votre connexion.
                       </span>
-                      <span v-else>
-                        🎉 Début de la conversation
-                      </span>
+                      <span v-else> 🎉 Début de la conversation </span>
                     </p>
                   </div>
                 </div>
@@ -44,7 +47,7 @@
                     isFirstInGroup(index) ? 'mt-4' : 'mt-2',
                   ]"
                 >
-                  <div 
+                  <div
                     :class="[
                       'flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm font-semibold flex-shrink-0',
                       isLastInGroup(index) ? 'visible' : 'invisible',
@@ -53,13 +56,13 @@
                     {{ message.username[0].toUpperCase() }}
                   </div>
 
-                  <div class="flex flex-col max-w-[70%]" :class="isOwnMessage(message.userId) ? 'items-end' : 'items-start'">
-                    <div 
+                  <div
+                    class="flex flex-col max-w-[70%]"
+                    :class="isOwnMessage(message.userId) ? 'items-end' : 'items-start'"
+                  >
+                    <div
                       v-if="isFirstInGroup(index)"
-                      :class="[
-                        'px-2 mb-1',
-                        isOwnMessage(message.userId) ? 'flex-row-reverse' : '',
-                      ]"
+                      :class="['px-2 mb-1', isOwnMessage(message.userId) ? 'flex-row-reverse' : '']"
                     >
                       <span class="text-xs font-semibold text-foreground">
                         {{ message.username }}
@@ -76,12 +79,9 @@
                     >
                       <p class="text-sm break-words">{{ message.content }}</p>
                     </div>
-                    <div 
+                    <div
                       v-if="isLastInGroup(index)"
-                      :class="[
-                        'p-1 mb-1',
-                        isOwnMessage(message.userId) ? 'flex-row-reverse' : '',
-                      ]"
+                      :class="['p-1 mb-1', isOwnMessage(message.userId) ? 'flex-row-reverse' : '']"
                     >
                       <span class="text-xs text-muted-foreground">
                         {{ formatTime(message.timestamp) }}
@@ -90,7 +90,10 @@
                   </div>
                 </div>
 
-                <div v-if="chatStore.messages.length === 0" class="flex items-center justify-center h-full text-center p-8">
+                <div
+                  v-if="chatStore.messages.length === 0"
+                  class="flex items-center justify-center h-full text-center p-8"
+                >
                   <div class="space-y-2">
                     <p class="text-muted-foreground">Aucun message</p>
                     <p class="text-sm text-muted-foreground">Commencez la conversation !</p>
@@ -100,7 +103,7 @@
             </ScrollArea>
 
             <div class="border-t p-4 bg-muted/30">
-              <form @submit.prevent="handleSendMessage" class="flex gap-2">
+              <form class="flex gap-2" @submit.prevent="handleSendMessage">
                 <Input
                   v-model="messageInput"
                   type="text"
@@ -130,7 +133,9 @@
                   :key="user"
                   class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-muted/50 transition-colors"
                 >
-                  <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm font-semibold">
+                  <div
+                    class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm font-semibold"
+                  >
                     {{ user[0].toUpperCase() }}
                   </div>
                   <span class="text-sm font-medium truncate">{{ user }}</span>
@@ -166,34 +171,34 @@ const handleSendMessage = () => {
 
   chatStore.sendMessage(content);
   messageInput.value = '';
-}
+};
 
 const formatTime = (timestamp: number): string => {
   const date = new Date(timestamp);
   const dayName = date.toLocaleDateString('fr-FR', { weekday: 'long' });
   const hours = date.getHours().toString().padStart(2, '0');
   const minutes = date.getMinutes().toString().padStart(2, '0');
-  
+
   const capitalizedDay = dayName.charAt(0).toUpperCase() + dayName.slice(1);
-  
+
   return `${capitalizedDay} ${hours}h${minutes}`;
-}
+};
 
 const isOwnMessage = (userId: string): boolean => {
   return userId === chatStore.currentUser?.id;
-}
+};
 
 const isFirstInGroup = (index: number): boolean => {
   if (index === 0) return true;
   const currentMsg = chatStore.messages[index];
   const prevMsg = chatStore.messages[index - 1];
   return currentMsg.userId !== prevMsg.userId;
-}
+};
 
 const isLastInGroup = (index: number): boolean => {
   if (index === chatStore.messages.length - 1) return true;
   const currentMsg = chatStore.messages[index];
   const nextMsg = chatStore.messages[index + 1];
   return currentMsg.userId !== nextMsg.userId;
-}
+};
 </script>

@@ -22,13 +22,30 @@ module.exports = {
     extraFileExtensions: ['.vue'],
   },
   plugins: ['vue', '@typescript-eslint'],
+  settings: {
+    'import/resolver': {
+      typescript: {
+        alwaysTryTypes: true,
+        project: './tsconfig.json',
+      },
+    },
+  },
   rules: {
     // Vue specific rules
     'vue/multi-word-component-names': 'off',
     'vue/no-v-html': 'warn',
+    'vue/require-default-prop': 'off',
     
     // Import rules
     'import/prefer-default-export': 'off',
+    'import/no-cycle': 'off',
+    'import/extensions': ['error', 'ignorePackages', {
+      js: 'never',
+      jsx: 'never',
+      ts: 'never',
+      tsx: 'never',
+      vue: 'always',
+    }],
     'import/no-extraneous-dependencies': ['error', {
       devDependencies: ['vite.config.ts', '**/*.config.js', '**/*.config.ts'],
     }],
@@ -42,5 +59,5 @@ module.exports = {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
   },
-  ignorePatterns: ['dist', 'node_modules', '*.config.js', '*.config.ts'],
+  ignorePatterns: ['dist', 'node_modules', '*.config.js', '*.config.ts', '.eslintrc.cjs'],
 };

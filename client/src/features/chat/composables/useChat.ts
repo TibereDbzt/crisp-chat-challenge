@@ -9,7 +9,7 @@ export function useChat(api: ChatApi) {
   const isConnected = ref(false);
 
   const isInRoom = computed(() => !!currentUser.value && !!currentRoom.value);
-  
+
   const sortedMessages = computed(() => {
     if (!currentRoom.value) return [];
     return [...currentRoom.value.messages].sort((a, b) => a.timestamp - b.timestamp);
@@ -19,32 +19,32 @@ export function useChat(api: ChatApi) {
     if (currentRoom.value) {
       currentRoom.value.messages.push(message);
     }
-  }
+  };
 
   const handleUsersUpdate = (data: { users: string[] }) => {
     if (currentRoom.value) {
       currentRoom.value.users = data.users;
     }
-  }
+  };
 
-  const handleRoomMessages = (data: { messages: Message[]; hasMoreMessages: boolean; }) => {
+  const handleRoomMessages = (data: { messages: Message[]; hasMoreMessages: boolean }) => {
     if (currentRoom.value) {
       currentRoom.value.messages = data.messages;
       currentRoom.value.hasMoreMessages = data.hasMoreMessages;
     }
-  }
+  };
 
   const setupListeners = () => {
     api.onMessage(handleNewMessage);
     api.onUserJoined(handleUsersUpdate);
     api.onRoomMessages(handleRoomMessages);
-  }
+  };
 
   const cleanupListeners = () => {
     api.offMessage(handleNewMessage);
     api.offUserJoined(handleUsersUpdate);
     api.offRoomMessages(handleRoomMessages);
-  }
+  };
 
   const joinRoom = async (username: string, roomName: string): Promise<boolean> => {
     try {
@@ -75,7 +75,7 @@ export function useChat(api: ChatApi) {
       error.value = err instanceof Error ? err.message : 'Unknown error';
       return false;
     }
-  }
+  };
 
   const sendMessage = (content: string) => {
     if (!currentUser.value || !currentRoom.value) {
@@ -83,10 +83,19 @@ export function useChat(api: ChatApi) {
       return;
     }
 
-    api.sendMessage(content, currentUser.value.username, currentUser.value.id, currentRoom.value.name);
-  }
+    api.sendMessage(
+      content,
+      currentUser.value.username,
+      currentUser.value.id,
+      currentRoom.value.name
+    );
+  };
 
-  const getRooms = async (): Promise<{ success: boolean; rooms: RoomSummary[]; error?: string }> => {
+  const getRooms = async (): Promise<{
+    success: boolean;
+    rooms: RoomSummary[];
+    error?: string;
+  }> => {
     try {
       if (!api.isConnected()) {
         api.connect();
@@ -96,19 +105,19 @@ export function useChat(api: ChatApi) {
       return {
         success: false,
         rooms: [],
-        error: err instanceof Error ? err.message : 'Unknown error'
+        error: err instanceof Error ? err.message : 'Unknown error',
       };
     }
-  }
+  };
 
   const leaveRoom = () => {
     cleanupListeners();
     api.disconnect();
-    
+
     currentUser.value = null;
     currentRoom.value = null;
     isConnected.value = false;
-  }
+  };
 
   return {
     currentUser,
