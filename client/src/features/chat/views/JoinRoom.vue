@@ -1,95 +1,19 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-slate-100 p-4">
-    <div class="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-4">
-      <!-- Liste des salons existants -->
-      <Card class="p-6 space-y-4">
-        <div class="space-y-2">
-          <h2 class="text-xl font-semibold flex items-center gap-2">
-            <MessageSquare class="h-5 w-5" />
-            Salons actifs
-          </h2>
-          <p class="text-sm text-muted-foreground">
-            Cliquez sur un salon pour le rejoindre
-          </p>
-        </div>
-
-        <div v-if="isLoadingRooms" class="flex items-center justify-center py-8">
-          <p class="text-sm text-muted-foreground">Chargement...</p>
-        </div>
-
-        <ScrollArea v-else-if="rooms.length > 0" class="h-[400px] pr-4">
-          <div class="space-y-2">
-            <button
-              v-for="room in rooms"
-              :key="room.name"
-              @click="selectRoom(room.name)"
-              :disabled="isLoading"
-              :class="[
-                'w-full p-4 text-left rounded-lg border transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed',
-                isRoomSelected(room.name)
-                  ? 'border-primary bg-primary/5 ring-primary/20'
-                  : 'border-border bg-card hover:border-primary/50 hover:bg-accent'
-              ]"
-            >
-              <div class="flex items-center justify-between">
-                <div class="flex-1">
-                  <div class="flex items-center gap-2">
-                    <p 
-                      :class="[
-                        'font-semibold',
-                        isRoomSelected(room.name) ? 'text-primary' : 'text-foreground'
-                      ]"
-                    >
-                      {{ room.name }}
-                    </p>
-                    <Check 
-                      v-if="isRoomSelected(room.name)"
-                      class="h-4 w-4 text-primary"
-                    />
-                  </div>
-                  <p 
-                    :class="[
-                      'text-xs mt-1',
-                      isRoomSelected(room.name) ? 'text-primary/70' : 'text-muted-foreground'
-                    ]"
-                  >
-                    {{ room.userCount }} {{ room.userCount === 1 ? 'utilisateur' : 'utilisateurs' }}
-                  </p>
-                </div>
-                <div 
-                  :class="[
-                    'flex h-9 w-9 items-center justify-center rounded-full text-sm font-bold',
-                    isRoomSelected(room.name)
-                      ? 'bg-primary text-primary-foreground shadow-sm'
-                      : 'bg-primary/10 text-primary'
-                  ]"
-                >
-                  {{ room.userCount }}
-                </div>
-              </div>
-            </button>
-          </div>
-        </ScrollArea>
-
-        <div v-else class="flex flex-col items-center justify-center py-8 text-center">
-          <p class="text-sm text-muted-foreground mb-2">Aucun salon actif</p>
-          <p class="text-xs text-muted-foreground">Créez-en un nouveau pour commencer !</p>
-        </div>
-      </Card>
-
-      <!-- Formulaire de création/rejoindre -->
-      <Card class="p-8 space-y-6">
+    <Card class="w-full max-w-2xl p-8 space-y-6">
+      <!-- Header -->
       <div class="flex flex-col items-center space-y-2 text-center">
         <div class="flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
           <MessageSquare class="h-7 w-7 text-primary" />
         </div>
         <h1 class="text-3xl font-bold tracking-tight">Crisp Chat</h1>
         <p class="text-sm text-muted-foreground">
-          Rejoignez un salon pour commencer à discuter
+          Rejoignez un salon existant ou créez-en un nouveau
         </p>
       </div>
 
-        <form @submit.prevent="handleJoinRoom" class="space-y-4">
+      <div class="space-y-6">
+        <!-- Username -->
         <div class="space-y-2">
           <label for="username" class="text-sm font-medium leading-none">
             Nom d'utilisateur
@@ -104,46 +28,121 @@
           />
         </div>
 
-        <div class="space-y-2">
+        <!-- Room Selection/Creation -->
+        <div v-if="username.trim()" class="space-y-3">
           <label for="roomName" class="text-sm font-medium leading-none">
-            Nom du salon
+            Salon
           </label>
+          
           <Input
             id="roomName"
             v-model="roomName"
             type="text"
-            placeholder="Entrez le nom du salon"
+            placeholder="Rechercher ou créer un salon..."
             :disabled="isLoading"
             required
           />
+
+          <!-- Existing Rooms List -->
+          <div v-if="!isLoadingRooms && rooms.length > 0" class="space-y-2 max-h-[320px] overflow-y-auto">
+            <p class="text-xs text-muted-foreground px-1">
+              {{ filteredRooms.length > 0 ? 'Salons disponibles' : 'Aucun salon correspondant' }}
+            </p>
+            
+            <button
+              v-for="room in filteredRooms"
+              :key="room.name"
+              @click.prevent="() => handleJoinRoom(room.name)"
+              type="button"
+              :disabled="isLoading || !username.trim()"
+              :class="[
+                'w-full p-3 text-left rounded-lg border transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed',
+                isRoomSelected(room.name)
+                  ? 'border-primary bg-primary/5 ring-1 ring-primary/20'
+                  : 'border-border bg-card hover:border-primary/50 hover:bg-accent'
+              ]"
+            >
+              <div class="flex items-center justify-between">
+                <div class="flex-1">
+                  <div class="flex items-center gap-2">
+                    <p 
+                      :class="[
+                        'font-semibold text-sm',
+                        isRoomSelected(room.name) ? 'text-primary' : 'text-foreground'
+                      ]"
+                    >
+                      {{ room.name }}
+                    </p>
+                    <Check 
+                      v-if="isRoomSelected(room.name)"
+                      class="h-4 w-4 text-primary"
+                    />
+                  </div>
+                  <p 
+                    :class="[
+                      'text-xs mt-0.5',
+                      isRoomSelected(room.name) ? 'text-primary/70' : 'text-muted-foreground'
+                    ]"
+                  >
+                    {{ room.userCount }} {{ room.userCount === 1 ? 'utilisateur' : 'utilisateurs' }}
+                  </p>
+                </div>
+                <div 
+                  :class="[
+                    'flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold',
+                    isRoomSelected(room.name)
+                      ? 'bg-primary text-primary-foreground'
+                      : 'bg-primary/10 text-primary'
+                  ]"
+                >
+                  {{ room.userCount }}
+                </div>
+              </div>
+            </button>
+
+            <!-- New Room Hint -->
+            <button 
+              v-if="isCreatingNewRoom"
+              @click.prevent="() => handleJoinRoom(roomName.trim())"
+              type="button"
+              :disabled="isLoading || !username.trim()"
+              class="w-full p-3 rounded-lg border-2 border-dashed border-primary/30 bg-primary/5 hover:bg-primary/10 hover:border-primary/50 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-left"
+            >
+              <div class="flex items-start gap-2">
+                <Plus class="h-4 w-4 text-primary mt-0.5 flex-shrink-0" />
+                <div>
+                  <p class="text-sm font-semibold text-primary">
+                    Créer le salon "{{ roomName.trim() }}"
+                  </p>
+                  <p class="text-xs text-muted-foreground mt-0.5">
+                    Cliquez ici pour créer et rejoindre ce nouveau salon
+                  </p>
+                </div>
+              </div>
+            </button>
+          </div>
+
+          <div v-else-if="isLoadingRooms" class="flex items-center justify-center py-4">
+            <p class="text-sm text-muted-foreground">Chargement des salons...</p>
+          </div>
         </div>
 
-        <Button
-          type="submit"
-          :disabled="isLoading || !username.trim() || !roomName.trim()"
-          class="w-full"
-        >
-          {{ isLoading ? 'Connexion...' : 'Rejoindre le salon' }}
-        </Button>
-
-          <p v-if="chatStore.error" class="text-sm text-destructive text-center">
-            {{ chatStore.error }}
-          </p>
-        </form>
-      </Card>
-    </div>
+        <!-- Error Message -->
+        <p v-if="chatStore.error" class="text-sm text-destructive text-center">
+          {{ chatStore.error }}
+        </p>
+      </div>
+    </Card>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted, onUnmounted } from 'vue';
-import { MessageSquare, Check } from 'lucide-vue-next';
+import { ref, computed, onMounted, onUnmounted } from 'vue';
+import { MessageSquare, Check, Plus } from 'lucide-vue-next';
 import { useChatStore } from '@chat/stores/chatStore';
 import { createSocketChatApi } from '@chat/api/socketChatApi';
-import { Button } from '@components/button';
 import { Input } from '@components/input';
 import { Card } from '@components/card';
-import { ScrollArea } from '@components/scroll-area';
 import type { RoomSummary } from '@chat/types';
 
 const chatStore = useChatStore();
@@ -160,6 +159,26 @@ const isRoomSelected = (roomNameToCheck: string): boolean => {
   return roomName.value.trim().toLowerCase() === roomNameToCheck.toLowerCase();
 }
 
+// Filtrer les salons selon la recherche
+const filteredRooms = computed(() => {
+  const search = roomName.value.trim().toLowerCase();
+  if (!search) return rooms.value;
+  
+  return rooms.value.filter(room => 
+    room.name.toLowerCase().includes(search)
+  );
+});
+
+// Vérifier si on crée un nouveau salon
+const isCreatingNewRoom = computed(() => {
+  const search = roomName.value.trim();
+  if (!search) return false;
+  
+  return !rooms.value.some(room => 
+    room.name.toLowerCase() === search.toLowerCase()
+  );
+});
+
 const loadRooms = async () => {
   isLoadingRooms.value = true;
   try {
@@ -174,15 +193,13 @@ const loadRooms = async () => {
   }
 }
 
-const selectRoom = (selectedRoomName: string) => {
-  roomName.value = selectedRoomName;
-}
-
-const handleJoinRoom = async () => {
-  if (!username.value.trim() || !roomName.value.trim()) return;
+const handleJoinRoom = async (selectedRoomName?: string) => {
+  const targetRoom = selectedRoomName || roomName.value.trim();
+  
+  if (!username.value.trim() || !targetRoom) return;
 
   isLoading.value = true;
-  const success = await chatStore.joinRoom(username.value.trim(), roomName.value.trim());
+  const success = await chatStore.joinRoom(username.value.trim(), targetRoom);
   isLoading.value = false;
 
   if (!success) {
