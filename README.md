@@ -125,3 +125,48 @@ The client uses a **feature-based architecture**:
 - `npm run build` - Build TypeScript to JavaScript
 - `npm start` - Start production server
 - `npm run lint` - Run ESLint
+
+## Future Improvements
+
+While the current implementation provides a solid foundation, several enhancements could be made for a production-ready application:
+
+### 1. **Unit Testing**
+- **Priority**: High
+- **Rationale**: The Clean Architecture approach makes use cases highly testable since they contain pure business logic with no infrastructure dependencies
+- **Scope**: Focus on server-side use cases (`joinRoom`, `sendMessage`, `leaveRoom`, `getRooms`) which are easily mockable thanks to dependency injection
+- **Value**: Ensures business logic correctness and prevents regressions
+
+### 2. **Persistent Data Storage**
+- **Current limitation**: In-memory storage means all data is lost on server restart
+- **Why in-memory?**: Simplification for the demo, time constraints, and frontend-focused position
+- **Migration path**: Thanks to Clean Architecture, switching to a database (PostgreSQL, MongoDB, Redis) only requires implementing new repository classes without touching business logic
+- **Example**: Replace `InMemoryRoomRepository` with `PostgresRoomRepository` implementing the same `RoomRepository` interface
+
+### 3. **Error Handling Strategy**
+- **Current issue**: Silent errors (e.g., returning `null` when user not found) can mask problems and make debugging difficult
+- **Better approach**: 
+  - Use custom error classes (`UserNotFoundError`, `RoomNotFoundError`)
+  - Implement error boundaries with proper logging
+  - Return explicit error responses to clients
+- **Impact**: Improved observability and easier troubleshooting in production
+
+### 4. **User Authentication & Session Persistence**
+- **Current limitation**: Users are disconnected on page reload
+- **Improvements**:
+  - Implement JWT-based authentication
+  - Store user session in localStorage/sessionStorage
+  - Auto-reconnect with stored credentials
+  - Add user profiles and avatars
+
+### 5. **Additional Features**
+- **Message history**: Paginated message loading for large chat rooms
+- **Typing indicators**: Show when users are typing
+- **Read receipts**: Track which messages have been seen
+- **File sharing**: Support image/file uploads
+- **Rate limiting**: Prevent spam and abuse
+- **Message search**: Full-text search across chat history
+- **Notifications**: Browser notifications for new messages when tab is not active
+
+---
+
+**Note**: These improvements were deprioritized to focus on demonstrating solid architecture and clean code practices within the test timeframe.
