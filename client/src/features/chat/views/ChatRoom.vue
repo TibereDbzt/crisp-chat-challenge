@@ -21,7 +21,7 @@
         <div class="flex-1 flex flex-col p-4">
           <Card class="flex-1 flex flex-col overflow-hidden">
             <ScrollArea class="flex-1 p-4" :autoScrollTrigger="chatStore.messages" showNewContentButton>
-              <div class="space-y-4">
+              <div>
                 <div v-if="chatStore.messages.length > 0" class="flex justify-center py-4">
                   <div class="bg-muted/50 rounded-lg px-4 py-2 text-center">
                     <p class="text-xs text-muted-foreground">
@@ -36,47 +36,57 @@
                 </div>
 
                 <div
-                  v-for="message in chatStore.messages"
+                  v-for="(message, index) in chatStore.messages"
                   :key="message.id"
                   :class="[
-                    'flex gap-2 items-start',
+                    'flex gap-2 w-full',
                     isOwnMessage(message.userId) ? 'flex-row-reverse' : 'justify-start',
+                    isFirstInGroup(index) ? 'mt-4' : 'mt-2',
                   ]"
                 >
-                  <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm font-semibold flex-shrink-0 mt-1">
-                    {{ message.username[0].toUpperCase() }}
-                  </div>
-                  <div
+                  <div 
                     :class="[
-                      'max-w-[70%] rounded-lg px-4 py-2 shadow-sm',
-                      isOwnMessage(message.userId)
-                        ? 'bg-primary text-primary-foreground'
-                        : 'bg-white border',
+                      'flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm font-semibold flex-shrink-0',
+                      isLastInGroup(index) ? 'visible' : 'invisible',
                     ]"
                   >
-                    <div class="flex items-baseline justify-between gap-2 mb-1">
-                      <span
-                        :class="[
-                          'text-xs font-semibold',
-                          isOwnMessage(message.userId)
-                            ? 'text-primary-foreground/90'
-                            : 'text-foreground',
-                        ]"
-                      >
+                    {{ message.username[0].toUpperCase() }}
+                  </div>
+
+                  <div class="flex flex-col max-w-[70%]" :class="isOwnMessage(message.userId) ? 'items-end' : 'items-start'">
+                    <div 
+                      v-if="isFirstInGroup(index)"
+                      :class="[
+                        'px-2 mb-1',
+                        isOwnMessage(message.userId) ? 'flex-row-reverse' : '',
+                      ]"
+                    >
+                      <span class="text-xs font-semibold text-foreground">
                         {{ message.username }}
                       </span>
-                      <span
-                        :class="[
-                          'text-xs',
-                          isOwnMessage(message.userId)
-                            ? 'text-primary-foreground/70'
-                            : 'text-muted-foreground',
-                        ]"
-                      >
+                    </div>
+
+                    <div
+                      :class="[
+                        'rounded-lg px-4 py-2 shadow-sm w-fit',
+                        isOwnMessage(message.userId)
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-white border',
+                      ]"
+                    >
+                      <p class="text-sm break-words">{{ message.content }}</p>
+                    </div>
+                    <div 
+                      v-if="isLastInGroup(index)"
+                      :class="[
+                        'p-1 mb-1',
+                        isOwnMessage(message.userId) ? 'flex-row-reverse' : '',
+                      ]"
+                    >
+                      <span class="text-xs text-muted-foreground">
                         {{ formatTime(message.timestamp) }}
                       </span>
                     </div>
-                    <p class="text-sm break-words">{{ message.content }}</p>
                   </div>
                 </div>
 
@@ -167,5 +177,19 @@ const formatTime = (timestamp: number): string => {
 
 const isOwnMessage = (userId: string): boolean => {
   return userId === chatStore.currentUser?.id;
+}
+
+const isFirstInGroup = (index: number): boolean => {
+  if (index === 0) return true;
+  const currentMsg = chatStore.messages[index];
+  const prevMsg = chatStore.messages[index - 1];
+  return currentMsg.userId !== prevMsg.userId;
+}
+
+const isLastInGroup = (index: number): boolean => {
+  if (index === chatStore.messages.length - 1) return true;
+  const currentMsg = chatStore.messages[index];
+  const nextMsg = chatStore.messages[index + 1];
+  return currentMsg.userId !== nextMsg.userId;
 }
 </script>
