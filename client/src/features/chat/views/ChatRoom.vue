@@ -7,7 +7,7 @@
             <Users class="h-5 w-5 text-primary" />
           </div>
           <div>
-            <h2 class="text-xl font-semibold">{{ chatStore.currentRoom }}</h2>
+            <h2 class="text-xl font-semibold">{{ chatStore.currentRoom?.name }}</h2>
             <p class="text-sm text-muted-foreground">{{ chatStore.currentUser?.username }}</p>
           </div>
         </div>
@@ -25,7 +25,7 @@
                 <div v-if="chatStore.messages.length > 0" class="flex justify-center py-4">
                   <div class="bg-muted/50 rounded-lg px-4 py-2 text-center">
                     <p class="text-xs text-muted-foreground">
-                      <span v-if="chatStore.hasMoreMessages">
+                      <span v-if="chatStore.currentRoom?.hasMoreMessages">
                         📜 Vous avez rejoint un salon existant. Vous ne voyez que les 10 derniers messages avant votre connexion.
                       </span>
                       <span v-else>
@@ -107,13 +107,13 @@
             <div class="px-4 py-3 border-b">
               <h3 class="font-semibold flex items-center gap-2">
                 <Users class="h-4 w-4" />
-                Utilisateurs ({{ chatStore.users.length }})
+                Utilisateurs ({{ chatStore.currentRoom?.users.length ?? 0 }})
               </h3>
             </div>
             <ScrollArea class="flex-1 p-2">
               <div class="space-y-1">
                 <div
-                  v-for="user in chatStore.users"
+                  v-for="user in chatStore.currentRoom?.users ?? []"
                   :key="user"
                   class="flex items-center gap-3 px-3 py-2 rounded-md hover:bg-muted/50 transition-colors"
                 >
@@ -122,7 +122,7 @@
                   </div>
                   <span class="text-sm font-medium truncate">{{ user }}</span>
                 </div>
-                <div v-if="chatStore.users.length === 0" class="text-center py-8">
+                <div v-if="!chatStore.currentRoom?.users.length" class="text-center py-8">
                   <p class="text-sm text-muted-foreground">Aucun utilisateur en ligne</p>
                 </div>
               </div>

@@ -1,33 +1,37 @@
 import { ref, computed } from 'vue';
 import type { ChatApi } from '@chat/api/chatApi';
-import type { User, Message } from '@chat/types';
+import type { User, Message, Room } from '@chat/types';
 
 export function useChat(api: ChatApi) {
   const currentUser = ref<User | null>(null);
-  const currentRoom = ref<string>('');
-  const messages = ref<Message[]>([]);
-  const users = ref<string[]>([]);
+  const currentRoom = ref<Room | null>(null);
   const error = ref<string>('');
   const isConnected = ref(false);
-  const hasMoreMessages = ref(false);
 
   const isInRoom = computed(() => !!currentUser.value && !!currentRoom.value);
   
   const sortedMessages = computed(() => {
-    return [...messages.value].sort((a, b) => a.timestamp - b.timestamp);
+    if (!currentRoom.value) return [];
+    return [...currentRoom.value.messages].sort((a, b) => a.timestamp - b.timestamp);
   });
 
   const handleNewMessage = (message: Message) => {
-    messages.value.push(message);
+    if (currentRoom.value) {
+      currentRoom.value.messages.push(message);
+    }
   }
 
   const handleUsersUpdate = (data: { users: string[] }) => {
-    users.value = data.users;
+    if (currentRoom.value) {
+      currentRoom.value.users = data.users;
+    }
   }
 
   const handleRoomMessages = (data: { messages: Message[]; hasMoreMessages: boolean; }) => {
-    messages.value = data.messages;
-    hasMoreMessages.value = data.hasMoreMessages;
+    if (currentRoom.value) {
+      currentRoom.value.messages = data.messages;
+      currentRoom.value.hasMoreMessages = data.hasMoreMessages;
+    }
   }
 
   const setupListeners = () => {
@@ -59,7 +63,12 @@ export function useChat(api: ChatApi) {
       }
 
       currentUser.value = response.user!;
-      currentRoom.value = roomName;
+      currentRoom.value = {
+        name: roomName,
+        messages: [],
+        users: [],
+        hasMoreMessages: false,
+      };
 
       return true;
     } catch (err) {
@@ -74,7 +83,7 @@ export function useChat(api: ChatApi) {
       return;
     }
 
-    api.sendMessage(content, currentUser.value.username, currentUser.value.id, currentRoom.value);
+    api.sendMessage(content, currentUser.value.username, currentUser.value.id, currentRoom.value.name);
   }
 
   const leaveRoom = () => {
@@ -82,22 +91,17 @@ export function useChat(api: ChatApi) {
     api.disconnect();
     
     currentUser.value = null;
-    currentRoom.value = '';
-    messages.value = [];
-    users.value = [];
+    currentRoom.value = null;
     isConnected.value = false;
-    hasMoreMessages.value = false;
   }
 
   return {
     currentUser,
     currentRoom,
     messages: sortedMessages,
-    users,
     error,
     isConnected,
     isInRoom,
-    hasMoreMessages,
     joinRoom,
     sendMessage,
     leaveRoom,
