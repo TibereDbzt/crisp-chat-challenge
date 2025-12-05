@@ -106,9 +106,10 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, onUnmounted } from 'vue';
 import { MessageSquare } from 'lucide-vue-next';
 import { useChatStore } from '@chat/stores/chatStore';
+import { createSocketChatApi } from '@chat/api/socketChatApi';
 import { Button } from '@components/button';
 import { Input } from '@components/input';
 import { Card } from '@components/card';
@@ -116,6 +117,8 @@ import { ScrollArea } from '@components/scroll-area';
 import type { RoomSummary } from '@chat/types';
 
 const chatStore = useChatStore();
+const SERVER_URL = import.meta.env.VITE_SERVER_URL || 'http://localhost:3001';
+const api = createSocketChatApi(SERVER_URL);
 
 const username = ref('');
 const roomName = ref('');
@@ -153,7 +156,17 @@ const handleJoinRoom = async () => {
   }
 }
 
-onMounted(() => {
+const handleRoomsUpdated = () => {
   loadRooms();
+}
+
+onMounted(() => {
+  api.connect();
+  loadRooms();
+  api.onRoomsUpdated(handleRoomsUpdated);
+});
+
+onUnmounted(() => {
+  api.offRoomsUpdated(handleRoomsUpdated);
 });
 </script>

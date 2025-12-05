@@ -19,7 +19,6 @@ export function createSocketHandlers(
 
         callback({ success: true, user: user });
 
-        // Envoyer les messages récents fournis par le use case
         socket.emit('room:messages', { 
           messages: lastTenMessages,
           hasMoreMessages: hasMoreMessages,
@@ -27,6 +26,8 @@ export function createSocketHandlers(
 
         const usernames = room.users.map((u) => u.username);
         io.to(room.name).emit('room:users', { users: usernames });
+
+        io.emit('rooms:updated');
       } catch (error) {
         const errorMessage = error instanceof Error ? error.message : 'Failed to join room';
         callback({ success: false, error: errorMessage });
@@ -63,6 +64,8 @@ export function createSocketHandlers(
         if (room) {
           const usernames = room.users.map((u) => u.username);
           io.to(room.name).emit('room:users', { users: usernames });
+
+          io.emit('rooms:updated');
         }
       } catch (error) {
         console.error('[Socket] Error handling disconnect:', error);

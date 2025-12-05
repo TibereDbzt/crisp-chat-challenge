@@ -77,5 +77,13 @@ export function createSocketChatApi(serverUrl: string): ChatApi {
     offRoomMessages(callback: (data: { messages: Message[]; hasMoreMessages: boolean }) => void): void {
       socket?.off('room:messages', callback);
     },
+
+    onRoomsUpdated(callback: () => void): void {
+      socket?.on('rooms:updated', callback);
+    },
+
+    offRoomsUpdated(callback: () => void): void {
+      socket?.off('rooms:updated', callback);
+    },
   };
 }
