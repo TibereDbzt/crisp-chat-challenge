@@ -20,8 +20,8 @@
       <div class="flex-1 flex overflow-hidden">
         <div class="flex-1 flex flex-col p-4">
           <Card class="flex-1 flex flex-col overflow-hidden">
-            <ScrollArea class="flex-1 p-4">
-              <div ref="messagesContainer" class="space-y-4">
+            <ScrollArea class="flex-1 p-4" :autoScrollTrigger="chatStore.messages" showNewContentButton>
+              <div class="space-y-4">
                 <div v-if="chatStore.messages.length > 0" class="flex justify-center py-4">
                   <div class="bg-muted/50 rounded-lg px-4 py-2 text-center">
                     <p class="text-xs text-muted-foreground">
@@ -39,10 +39,13 @@
                   v-for="message in chatStore.messages"
                   :key="message.id"
                   :class="[
-                    'flex',
-                    isOwnMessage(message.userId) ? 'justify-end' : 'justify-start',
+                    'flex gap-2 items-start',
+                    isOwnMessage(message.userId) ? 'flex-row-reverse' : 'justify-start',
                   ]"
                 >
+                  <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-purple-500 to-pink-500 text-white text-sm font-semibold flex-shrink-0 mt-1">
+                    {{ message.username[0].toUpperCase() }}
+                  </div>
                   <div
                     :class="[
                       'max-w-[70%] rounded-lg px-4 py-2 shadow-sm',
@@ -135,7 +138,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, nextTick, watch } from 'vue';
+import { ref } from 'vue';
 import { Send, Users, LogOut } from 'lucide-vue-next';
 import { useChatStore } from '@chat/stores/chatStore';
 import { Button } from '@components/button';
@@ -146,17 +149,6 @@ import { ScrollArea } from '@components/scroll-area';
 const chatStore = useChatStore();
 
 const messageInput = ref('');
-const messagesContainer = ref<HTMLElement | null>(null);
-
-const scrollToBottom = () => {
-  nextTick(() => {
-    if (messagesContainer.value) {
-      messagesContainer.value.scrollTop = messagesContainer.value.scrollHeight;
-    }
-  });
-}
-
-watch(() => chatStore.messages, scrollToBottom, { deep: true });
 
 const handleSendMessage = () => {
   const content = messageInput.value.trim();
