@@ -12,7 +12,10 @@
       @update:model-value="(value) => $emit('update:modelValue', String(value))"
     />
 
-    <div v-if="!isLoadingRooms && (rooms.length > 0 || modelValue.length)" class="space-y-2 max-h-[320px] overflow-y-auto">
+    <div
+      v-if="!isLoadingRooms && (rooms.length > 0 || modelValue.length)"
+      class="space-y-2 max-h-[320px] overflow-y-auto"
+    >
       <p class="text-xs text-gray-500 px-1">
         {{ filteredRooms.length > 0 ? '' : 'Aucun salon correspondant' }}
       </p>
@@ -36,9 +39,7 @@
               {{ room.userCount }} {{ room.userCount === 1 ? 'utilisateur' : 'utilisateurs' }}
             </p>
           </div>
-          <div
-            class="flex h-8 w-8 items-center justify-center rounded-full bg-[#4963F3]"
-          >
+          <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#4963F3]">
             <ArrowRight class="h-4 w-4 text-white" />
           </div>
         </div>
@@ -106,6 +107,6 @@ const isCreatingNewRoom = computed(() => {
   const search = props.modelValue.trim();
   if (!search) return false;
 
-  return !props.rooms.some((room) => room.name.toLowerCase() === search.toLowerCase());
+  return !filteredRooms.value.some((room) => room.name.toLowerCase() === search.toLowerCase());
 });
 </script>

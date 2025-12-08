@@ -1,21 +1,21 @@
 <template>
-  <div
-    class="min-h-screen flex items-center justify-center bg-gray-50 p-4"
-  >
-    <Card class="w-full max-w-2xl p-8 space-y-6 transition-all duration-300 ease-in-out shadow-lg border-gray-200 bg-white">
+  <div class="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+    <Card
+      class="w-full max-w-2xl p-8 space-y-6 transition-all duration-300 ease-in-out shadow-lg border-gray-200 bg-white"
+    >
       <div class="flex flex-col items-center space-y-2 text-center">
         <div class="flex h-14 w-14 items-center justify-center rounded-xl bg-[#4963F3] shadow-sm">
           <MessageSquare class="h-7 w-7 text-white" />
         </div>
         <h1 class="text-3xl font-bold tracking-tight text-gray-900">Crisp Chat</h1>
-        <p class="text-sm text-gray-600">
-          Rejoignez un salon existant ou créez-en un nouveau
-        </p>
+        <p class="text-sm text-gray-600">Rejoignez un salon existant ou créez-en un nouveau</p>
       </div>
 
       <div class="space-y-6">
         <div class="space-y-2 px-1">
-          <label for="username" class="text-sm font-medium leading-none text-gray-900"> Nom d'utilisateur </label>
+          <label for="username" class="text-sm font-medium leading-none text-gray-900">
+            Nom d'utilisateur
+          </label>
           <Input
             id="username"
             v-model="username"
